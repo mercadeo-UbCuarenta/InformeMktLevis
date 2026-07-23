@@ -22,7 +22,9 @@
   let statusTimer;function status(message,type=''){const el=document.querySelector('#importStatus'),admin=document.querySelector('#adminStatus');if(admin)admin.textContent=message;if(!el)return;clearTimeout(statusTimer);el.textContent=message;el.className=`import-status show ${type}`;statusTimer=setTimeout(()=>el.className='import-status',7000)}
   async function importExcel(file){status(`Leyendo ${file.name}…`);const wb=parseWorkbook(await unzip(await file.arrayBuffer())),data=buildData(wb),evidence=buildEvidence(wb);window.applyImportedBudgetData(data);window.applyDriveEvidence(evidence);const download=document.querySelector('#downloadData');if(download)download.disabled=false;try{localStorage.setItem(STORAGE_KEY,JSON.stringify({data,evidence,fileName:file.name,savedAt:new Date().toISOString()}))}catch{}status(`Informe actualizado: ${data.records.length} movimientos y ${evidence.length} evidencias de Drive.`,'success')}
   document.querySelector('#importExcel')?.addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;try{await importExcel(file)}catch(error){console.error(error);status(`No se pudo actualizar: ${error.message}`,'error')}finally{event.target.value=''}});
-  try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved?.data){window.applyImportedBudgetData(saved.data);window.applyDriveEvidence(saved.evidence||[]);const download=document.querySelector('#downloadData');if(download)download.disabled=false;status(`Última actualización cargada: ${saved.fileName||'archivo de seguimiento'}.`,'success')}}catch{}
+  if(adminMode){
+    try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved?.data){window.applyImportedBudgetData(saved.data);window.applyDriveEvidence(saved.evidence||[]);const download=document.querySelector('#downloadData');if(download)download.disabled=false;status(`Última actualización cargada: ${saved.fileName||'archivo de seguimiento'}.`,'success')}}catch{}
+  }
   window.BudgetImporter={importExcel,parseWorkbook,unzip};
 })();
 
