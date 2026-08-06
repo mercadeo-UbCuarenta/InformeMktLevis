@@ -1,0 +1,13 @@
+﻿# Archivo fuente de trabajo: no publicar
+SEGUIMIENTO PPTO 2026.xlsx
+
+# Archivos temporales del sistema y editores
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+~$*.xlsx
+
+# Carpetas internas de trabajo
+.agents/
+.codex/
